@@ -25,7 +25,7 @@ def print_cards(player_hand, dealer_hand):
     for card in player_hand:
         print(f"Your card: {card}")
         score += cards[card]
-    print(f"Your current score is: {score}")
+
     game_score.append(score)
     print(f"Dealer faced up card : {dealer_hand[0]}")
     for card in dealer_hand:
@@ -36,7 +36,7 @@ def print_cards(player_hand, dealer_hand):
 
 
 def game_round(money, current_bid):  # Code for the round stage of the game
-    print("Well giving you two cards!")
+    print("Dealer: Well giving you two cards!")
     player_hand = []
     dealer_hand = []
     player_hand.append(random.choice(list(cards)))  # adds a random card from cards dictionary to the player
@@ -46,15 +46,19 @@ def game_round(money, current_bid):  # Code for the round stage of the game
     total_player_cards = game_score[0]  # adds score from list to the player score variable
     total_dealer_cards = game_score[1]   # adds score from list to the dealer score variable
     while total_player_cards < 21 and True:  # A loop for the take or hold actions
-        print(f"Player score: {total_player_cards}")
-        choice = input("So partner you wanna hold or take a card (h/t)?\n")
+        print(f"Your current score is: {total_player_cards}")
+        choice = input("Dealer: So partner you wanna hold or take a card (h/t)?\n")
         if choice == "t":
             player_hand.append(random.choice(list(cards)))
             game_score = print_cards(player_hand, dealer_hand)
             total_player_cards = game_score[0]
             total_dealer_cards = game_score[1]
-        else:
+        elif choice == "h":
             break
+        else:
+            print("Dealer: What!? Partner I want you to speak english!\n"
+                  "(invalid input try to answer by typing 'h' or 't')")
+
     ace_dealt_with = False
     while total_dealer_cards < 17 and total_dealer_cards < 21:  # handles whether dealer has less than 17 score
         card = (random.choice(list(cards)))
@@ -90,7 +94,7 @@ def game_round(money, current_bid):  # Code for the round stage of the game
     # all of this section is to act according to the player loss/win/draw
 
     if draw:
-        print(f"Well it's a draw partner you have {total_player_cards} and I have {total_dealer_cards}")
+        print(f"Dealer: Well it's a draw partner you have {total_player_cards} and I have {total_dealer_cards}")
         print("Your hand:")
         for card in player_hand:
             print(card)
@@ -100,7 +104,7 @@ def game_round(money, current_bid):  # Code for the round stage of the game
         print("You don't loose money")
         return money
     elif lost:
-        print(f"You lost you have {total_player_cards} and I have got {total_dealer_cards}")
+        print(f"Dealer: AH you lost! You have {total_player_cards} and I have got {total_dealer_cards}")
         print("Your hand:")
         for card in player_hand:
             print(card)
@@ -110,7 +114,7 @@ def game_round(money, current_bid):  # Code for the round stage of the game
         print(f"You lost {current_bid}$")
         return money - current_bid
     elif not lost:
-        print(f"You won! You have {total_player_cards} and I have got {total_dealer_cards}")
+        print(f"Dealer: HUH You won! You have {total_player_cards} and I have got {total_dealer_cards}")
         print("Your hand:")
         for card in player_hand:
             print(card)
@@ -128,24 +132,31 @@ def black_jack():  # the main interface
     global current_money
     while current_money > 0 and True:
         print(f"You have {current_money}$ in your pockets")
-        choice = input("Hi player ready to deal? (y/n)\n").lower()
+        choice = input("Dealer: Hey partner ready to deal? (y/n)\n").lower()
         if choice == "n":
-            print("Shame to see you go!\n" +
-                  f"You went out with {current_money}$ in your pocket")
+            print("Dealer: Shame to see you go!")
             break
-        else:
-            bid = int(input("Well well, How much you want to bid partner?\n"))
+        elif choice == "y":
+            bid = int(input("Dealer: Well well, How much you want to bid partner?\n"))
             if bid > current_money:
-                print("Hold on partner you don't have enough look somewhere else!")
+                print("Dealer: Hold on partner you don't have enough look somewhere else!")
                 print("Looking for another dealer after getting yelled at...")
+                print("You found another dealer who looks at you funny and you decide to sit in his table...")
                 black_jack()
                 break
             else:
-                current_money = game_round(current_money, bid)
+                   current_money = game_round(current_money, bid)
+        else:
+            print("Dealer: What!? Partner I want you to speak english!\n"
+                  "(invalid input try to answer by typing 'y' or 'n')")
 
 
 print(art.logo)
 black_jack()
-print(f"You have {current_money}$ go home partner and see you tomorrow!")
+if current_money == 0:
+    print("Bill the owner: Hope you didn't lose any money AHAAHAHAHAHAH!")
+else:
+    print("Bill the owner: Hope you bring that money you got in your pockets tomorrow HHaahhaaha")
+print(f"You went out with {current_money}$ in your pockets")
 
 # print(random.choice(list(cards)))
